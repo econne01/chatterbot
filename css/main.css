@@ -1,0 +1,38 @@
+.background {
+    background-color: lightblue;
+}
+
+.room-title {
+    padding-left: 10px;
+}
+
+.output-box {
+    position: fixed;
+    top: 15%;
+    width: 30%;
+}
+
+#bot__output {
+    left: 15%;
+}
+
+#user__output {
+    right: 15%;
+}
+
+.conversation-container {
+    background-color: white;
+    height: 200px;
+    padding: 10px;
+}
+
+#chatbot-image {
+    position: fixed;
+    top: 50%;
+    left: 5%;
+}
+#chatbot-image img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+}
