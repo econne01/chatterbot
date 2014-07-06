@@ -3,10 +3,7 @@
  *
  */
 var thinkTime = 500, // in milliseconds
-    enterTimestamp = new Date().getTime(),
-    maxConvoLines = 5,
-    userConvo = [],
-    chatbotConvo = ['Hi! My name is chatbot, what is your name?'];
+    enterTimestamp = new Date().getTime();
 
 var Conversation = function(container, options) {
     if (typeof options === 'undefined') options = {};
@@ -25,6 +22,10 @@ Conversation.prototype.addLine = function(chatText) {
     };
     // Display the conversation in Container
     self.containerElem.innerHTML = self.convoLines.join('<br/>');
+};
+
+var UserConversation = function(container, options) {
+    return new Conversation(container, options);
 };
 
 /**

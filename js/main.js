@@ -10,8 +10,7 @@ window.onload = function() {
     // Set default chatbot greeting
     botConvo = new Conversation(chatbotOutput);
     botConvo.addLine('Hi Im the chatbot');
-    //displayChat(chatbotOutput, chatbotConvo);
-    userConvo = new Conversation(userOutput);
+    userConvo = new UserConversation(userOutput);
 
     chatInput.onkeypress = function(e) {
         if (!e) {
@@ -24,15 +23,11 @@ window.onload = function() {
             // Display user's comment
             var chatText = chatInput.value;
             userConvo.addLine(chatText);
-            //userConvo = updateConvo(userConvo, chatText);
-            //displayChat(userOutput, userConvo);
             chatInput.value = '';
 
             // Display chatbot's response
             getResponsePromise(chatText).then(function(responseText) {
                 botConvo.addLine(responseText);
-                //chatbotConvo = updateConvo(chatbotConvo, responseText);
-                //displayChat(chatbotOutput, chatbotConvo);
             }, function(err) {
                 console.log(err);
             });
