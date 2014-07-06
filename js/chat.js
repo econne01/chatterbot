@@ -8,6 +8,24 @@ var thinkTime = 500, // in milliseconds
     userConvo = [],
     chatbotConvo = ['Hi! My name is chatbot, what is your name?'];
 
+var Conversation = function(container, options) {
+    if (typeof options === 'undefined') options = {};
+
+    this.maxConvoLines = (typeof options.maxConvoLines !== 'undefined') ? options.maxConvoLines : 5;
+    this.convoLines = [];
+    this.containerElem = container;
+};
+
+Conversation.prototype.addLine = function(chatText) {
+    var self = this;
+    // Update the conversation with new line
+    self.convoLines.push(chatText);
+    if (self.convoLines.length > self.maxConvoLines) {
+        self.convoLines = self.convoLines.slice(1, self.maxConvoLines+1);
+    };
+    // Display the conversation in Container
+    self.containerElem.innerHTML = self.convoLines.join('<br/>');
+};
 
 /**
  * Determine the most appropriate type
@@ -52,52 +70,4 @@ var getResponsePromise = function(chatText) {
         };
     });
     return promise;
-};
-
-var updateConvo = function(convo, chatText) {
-    convo.push(chatText);
-    if (convo.length > maxConvoLines) {
-        convo = convo.slice(1, maxConvoLines+1);
-    };
-    return convo;
-};
-
-/**
- * Display the chat text in the given conversation container
- */
-var displayChat = function(container, convo) {
-    container.innerHTML = convo.join('<br/>');
-};
-
-window.onload = function() {
-    var chatInput = $('#chatInput')[0],
-        userOutput = $('#user__output div.conversation-container')[0],
-        chatbotOutput = $('#bot__output div.conversation-container')[0];
-
-    // Set default chatbot greeting
-    displayChat(chatbotOutput, chatbotConvo);
-
-    chatInput.onkeypress = function(e) {
-        if (!e) {
-            e = window.event;
-        };
-        var keyCode = e.keyCode || e.which;
-        if (keyCode == '13') {
-            // Enter key was struck
-            enterTimestamp = new Date().getTime();
-            // Display user's comment
-            var chatText = chatInput.value;
-            userConvo = updateConvo(userConvo, chatText);
-            displayChat(userOutput, userConvo);
-            chatInput.value = '';
-
-            // Display chatbot's response
-            getResponsePromise(chatText).then(function(responseText) {
-                chatbotConvo = updateConvo(chatbotConvo, responseText);
-                displayChat(chatbotOutput, chatbotConvo);
-            }, function(err) {
-                console.log(err);
-            });
-        };
-    }
 };
