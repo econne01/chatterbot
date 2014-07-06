@@ -37,6 +37,7 @@
     background-color: white;
     height: 200px;
     padding: 10px;
+    overflow: auto;
 }
 
 #chatbot-image {
