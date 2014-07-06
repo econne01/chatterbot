@@ -17,6 +17,13 @@ var thinkTime = 500, // in milliseconds
  */
 var getResponseType = function(chatText) {
     var types = Object.keys(Responses);
+
+    if (chatText.slice(-1) === '?') {
+        // If last character of text is '?', we need to answer
+        return 'answers';
+    } else {
+        types.splice(types.indexOf('answers'), 1);
+    };
     return types[Math.floor(Math.random() * types.length)];
 };
 
