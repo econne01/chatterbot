@@ -1,9 +1,27 @@
 /**
+ * Constant variables here
+ *
+ */
+var thinkTime = 500; // in milliseconds
+
+
+/**
  * Determine the response of ChatBot based on
  * the given input (ie, chatted text)
  */
-var getBotResponse = function(chatText) {
-    return 'Wow! My name is chatbot';
+var getResponsePromise = function(chatText) {
+    var responseText = 'Wow! My name is chatbot';
+
+    var promise = new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            if (typeof responseText !== 'null') {
+                resolve(responseText);
+            } else {
+                reject(responseText);
+            };
+        }, thinkTime);
+    });
+    return promise;
 };
 
 /**
@@ -17,7 +35,6 @@ window.onload = function() {
     var chatInput = $('#chatInput')[0],
         userOutput = $('#user__output div.conversation-container')[0],
         botOutput = $('#bot__output div.conversation-container')[0];
-    var botResponse = getBotResponse(chatInput);
 
     chatInput.onkeypress = function(e) {
         if (!e) {
@@ -27,6 +44,11 @@ window.onload = function() {
         if (keyCode == '13') {
             // Enter key was struck
             displayChat(userOutput, chatInput.value);
+            getResponsePromise(chatInput.value).then(function(responseText) {
+                displayChat(botOutput, responseText);
+            }, function(err) {
+                console.log(err);
+            });
             chatInput.value = '';
         };
     }
