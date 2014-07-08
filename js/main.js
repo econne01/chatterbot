@@ -8,7 +8,7 @@ window.onload = function() {
     //poller.monitor();
 
     // Set default chatbot greeting
-    botConvo = new Conversation(chatbotOutput);
+    botConvo = new BotConversation(chatbotOutput);
     botConvo.addLine('Hi Im the chatbot');
     userConvo = new UserConversation(userOutput);
 
@@ -18,15 +18,13 @@ window.onload = function() {
         };
         var keyCode = e.keyCode || e.which;
         if (keyCode == '13') {
-            // Enter key was struck
-            enterTimestamp = new Date().getTime();
             // Display user's comment
             var chatText = chatInput.value;
             userConvo.addLine(chatText);
             chatInput.value = '';
 
             // Display chatbot's response
-            getResponsePromise(chatText).then(function(responseText) {
+            botConvo.getResponsePromise(chatText).then(function(responseText) {
                 botConvo.addLine(responseText);
             }, function(err) {
                 console.log(err);
