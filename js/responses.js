@@ -14,6 +14,14 @@ var Responses = {
         'Awesome!',
         'Nice'
     ],
+    continuePrompt: [
+        'Are you there?',
+        'Hello?',
+        'Tell me when you\'re back',
+        'I\'ll just wait here then, shall I?',
+        '...',
+        'Where did you go?'
+    ],
     starterQuestions: [
         'Where are you from?',
         'What do you do for a living?',

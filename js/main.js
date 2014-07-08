@@ -3,14 +3,11 @@ window.onload = function() {
         userOutput = $('#user__output div.conversation-container')[0],
         chatbotOutput = $('#bot__output div.conversation-container')[0];
 
-    // Call a polling function to prompt when conversation lags
-    poller = new Poller();
-    //poller.monitor();
-
     // Set default chatbot greeting
+    userConvo = new UserConversation(userOutput);
     botConvo = new BotConversation(chatbotOutput);
     botConvo.addLine('Hi Im the chatbot');
-    userConvo = new UserConversation(userOutput);
+    botConvo.addParticipant(userConvo);
 
     chatInput.onkeypress = function(e) {
         if (!e) {

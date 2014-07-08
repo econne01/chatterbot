@@ -46,12 +46,47 @@ UserConversation.prototype.addLine = Conversation.prototype.addLine;
  */
 var BotConversation = function(container, options) {
     this.init(container, options);
+    this.userConversation = null;
     this.thinkTime = 500; // in milliseconds
+    this.lullTimeTilPrompt = 20 * 1000; // in milliseconds
+    this.pollFrequency = 5 * 1000 // in milliseconds
 };
 
 // Extend Converation functions
 BotConversation.prototype.init = Conversation.prototype.init;
 BotConversation.prototype.addLine = Conversation.prototype.addLine;
+
+/**
+ * Add a user conversation to be a participant in
+ * speaking with this Bot
+ *
+ */
+BotConversation.prototype.addParticipant = function(userConvo) {
+    this.userConversation = userConvo;
+    this.monitorLulls();
+};
+
+/**
+ * Begin polling for lapses in the conversation
+ * If user has not spoken for a while, prompt him/her
+ *
+ */
+BotConversation.prototype.monitorLulls = function() {
+    var self = this;
+
+    setTimeout(function() {
+        var curTime = new Date().getTime();
+        if (self.userConversation !== null
+                && (curTime - self.userConversation.lastCommentTime > self.lullTimeTilPrompt)
+                && (curTime - self.lastCommentTime > self.lullTimeTilPrompt)) {
+            self.promptConversation();
+        };
+        if (self.userConversation !== null) {
+            // Poll again
+            self.monitorLulls();
+        };
+    }, self.pollFrequency);
+};
 
 /**
  * Determine the most appropriate type
@@ -99,4 +134,17 @@ BotConversation.prototype.getResponsePromise = function(chatText) {
         };
     });
     return promise;
+};
+
+
+/**
+ * Make a comment to prompt further conversation
+ *
+ */
+BotConversation.prototype.promptConversation = function() {
+    var responseType = 'continuePrompt',
+        randomIndex = Math.floor(Math.random() * Responses[responseType].length),
+        responseText = Responses[responseType][randomIndex];
+
+    this.addLine(responseText);
 };
