@@ -9,21 +9,37 @@ var Conversation = function(container, options) {
 Conversation.prototype.init = function(container, options) {
     if (typeof options === 'undefined') options = {};
 
-    this.maxConvoLines = (typeof options.maxConvoLines !== 'undefined') ? options.maxConvoLines : 5;
+    this.maxDisplayLines = (typeof options.maxDisplayLines !== 'undefined') ? options.maxDisplayLines : 5;
+    this.maxHistoryLines = (typeof options.maxHistoryLines !== 'undefined') ? options.maxHistoryLines : 100;
     this.convoLines = [];
     this.containerElem = container;
     this.lastCommentTime = new Date().getTime();
 };
 
-Conversation.prototype.addLine = function(chatText) {
+/**
+ * Add a line to this conversation history
+ * @param String chatText - the text to output
+ * @param String type - the index key of Responses set, specifies a category of text
+ *
+ */
+Conversation.prototype.addLine = function(chatText, type) {
     var self = this;
     // Update the conversation with new line
-    self.convoLines.push(chatText);
-    if (self.convoLines.length > self.maxConvoLines) {
-        self.convoLines = self.convoLines.slice(1, self.maxConvoLines+1);
+    self.convoLines.push({
+        type: type,
+        text: chatText
+    });
+    if (self.convoLines.length > self.maxHistoryLines) {
+        self.convoLines = self.convoLines.slice(-1 * self.maxHistoryLines);
     };
     // Display the conversation in Container
-    self.containerElem.innerHTML = self.convoLines.join('<br/>');
+    var textLines = [],
+        lines = self.convoLines.slice(-1 * self.maxDisplayLines);
+    for (var i=0; i < lines.length; i++) {
+        textLines.push(lines[i].text);
+    };
+    self.containerElem.innerHTML = textLines.join('<br/>');
+
     // Update last commented time
     self.lastCommentTime = new Date().getTime();
 };
@@ -128,7 +144,7 @@ BotConversation.prototype.getResponsePromise = function(chatText) {
 
         // Now complete the promise
         if (typeof responseText !== 'null') {
-            resolve(responseText);
+            resolve(responseText, responseType);
         } else {
             reject(responseText);
         };
@@ -146,5 +162,18 @@ BotConversation.prototype.promptConversation = function() {
         randomIndex = Math.floor(Math.random() * Responses[responseType].length),
         responseText = Responses[responseType][randomIndex];
 
-    this.addLine(responseText);
+    // Do not keep trying after 2 repeated attempts
+    var makeComment = false,
+        attempts = 2;
+    var recentLines = this.convoLines.slice(-1*attempts);
+    recentLines.reverse();
+    for (var i=0; i < attempts; i++) {
+        if (recentLines.length >= i && recentLines[i].type !== responseType) {
+            makeComment = true;
+            break;
+        };
+    };
+    if (makeComment) {
+        this.addLine(responseText, responseType);
+    };
 };

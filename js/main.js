@@ -21,8 +21,8 @@ window.onload = function() {
             chatInput.value = '';
 
             // Display chatbot's response
-            botConvo.getResponsePromise(chatText).then(function(responseText) {
-                botConvo.addLine(responseText);
+            botConvo.getResponsePromise(chatText).then(function(responseText, responseType) {
+                botConvo.addLine(responseText, responseType);
             }, function(err) {
                 console.log(err);
             });
