@@ -1,9 +1,19 @@
 var Responses = {
+    bored: {
+        keywords: [],
+        phrases: [
+            'Hmm, ok',
+            'I\'m bored of this',
+            'We\'ve been over this',
+            '...'
+        ]
+    },
     greeting: {
         keywords: [
             'hello',
             'hey',
             'hi',
+            'sup',
             'what\'s up',
             'yo'
         ],
@@ -20,6 +30,7 @@ var Responses = {
         keywords: [
             'dude',
             'man',
+            'my man',
             'playa'
         ],
         phrases: []

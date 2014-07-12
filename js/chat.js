@@ -158,13 +158,13 @@ BotConversation.prototype.getResponseType = function(chatText) {
         var greetings = recentLines.filter(function(convoLine) {
             return convoLine.type === 'greeting';
         });
-        responseType = greetings.length < maxTries ? 'greeting' : null;
+        responseType = greetings.length < maxTries ? 'greeting' : 'bored';
     } else if (chatText.slice(-1) === '?') {
         // If last character of text is '?', we need to answer
         responseType = 'answers';
     } else {
         // Dont randomly say an Answer or Continue Conversation prompt
-        responseType = self.getRandomResponseType(types, ['answers', 'continuePrompt', 'greeting']);
+        responseType = self.getRandomResponseType(types, ['answers', 'bored', 'continuePrompt', 'greeting']);
     };
     return responseType;
 };
@@ -218,7 +218,7 @@ BotConversation.prototype.checkForKeyword = function(chatText, type) {
         return false;
     };
 
-    var words = chatText.split(' ');
+    var words = chatText.replace(/\W/, '').split(' ');
     for (var i=0; i < words.length; i++) {
         if (Responses[type].keywords.indexOf(words[i]) !== -1) {
             return true;
