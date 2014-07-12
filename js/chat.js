@@ -24,6 +24,10 @@ Conversation.prototype.init = function(container, options) {
  */
 Conversation.prototype.addLine = function(chatText, type) {
     var self = this;
+    if (chatText == null || chatText == '') {
+        return;
+    };
+
     // Update the conversation with new line
     self.convoLines.push({
         type: type,
@@ -63,7 +67,7 @@ UserConversation.prototype.addLine = Conversation.prototype.addLine;
 var BotConversation = function(container, options) {
     this.init(container, options);
     this.userConversation = null;
-    this.thinkTime = 500; // in milliseconds
+    this.thinkTime = 1.5 * 1000; // in milliseconds
     this.lullTimeTilPrompt = 20 * 1000; // in milliseconds
     this.pollFrequency = 5 * 1000 // in milliseconds
 };
@@ -105,21 +109,64 @@ BotConversation.prototype.monitorLulls = function() {
 };
 
 /**
- * Determine the most appropriate type
- * of response, as listed in the constant
- * list of imported response options
+ * Get a random response keyword for given response type
+ *
+ */
+BotConversation.prototype.getKeyword = function(type) {
+    if (typeof Responses[type] === 'undefined') {
+        return '';
+    };
+
+    var keywords = Responses[type].keywords;
+    return keywords[Math.floor(Math.random() * keywords.length)];
+};
+
+/**
+ * Get a random response type from given
+ * available types, but do not choose one of
+ * the excluded types
+ *
+ */
+BotConversation.prototype.getRandomResponseType = function(availTypes, excludeTypes) {
+    // Get all avail types that are not excluded
+    var types = availTypes.filter(function(type) {
+        return excludeTypes.indexOf(type) === -1;
+    });
+    return types[Math.floor(Math.random() * types.length)];
+};
+
+/**
+ * Determine the most appropriate type of response,
+ * as listed in the constant list of imported response options
+ * @return String responseType, or null (for silence)
  *
  */
 BotConversation.prototype.getResponseType = function(chatText) {
-    var types = Object.keys(Responses);
+    var self = this,
+        responseType = null;
 
-    if (chatText.slice(-1) === '?') {
+    var types = Object.keys(Responses).filter(function(type) {
+        // Only include Response Types with any avail phrases
+        return Responses[type].phrases.length > 0;
+    })
+    //types = types.concat([null]);
+
+    if (self.checkForKeyword(chatText, 'greeting')) {
+        // If being greeted, greet in response. Max of 2 times
+        var maxTries = 2,
+            recentLines = this.convoLines.slice(-1 * maxTries);
+        var greetings = recentLines.filter(function(convoLine) {
+            return convoLine.type === 'greeting';
+        });
+        responseType = greetings.length < maxTries ? 'greeting' : null;
+    } else if (chatText.slice(-1) === '?') {
         // If last character of text is '?', we need to answer
-        return 'answers';
+        responseType = 'answers';
     } else {
-        types.splice(types.indexOf('answers'), 1);
+        // Dont randomly say an Answer or Continue Conversation prompt
+        responseType = self.getRandomResponseType(types, ['answers', 'continuePrompt', 'greeting']);
     };
-    return types[Math.floor(Math.random() * types.length)];
+    return responseType;
 };
 
 /**
@@ -131,27 +178,70 @@ BotConversation.prototype.getResponsePromise = function(chatText) {
     var self = this;
 
     var promise = new Promise(function(resolve, reject) {
-        var responseType = self.getResponseType(chatText);
+        var responseType = self.getResponseType(chatText),
+            responseText;
 
-        var randomIndex = Math.floor(Math.random() * Responses[responseType].length);
-        var responseText = Responses[responseType][randomIndex];
+        if (responseType === null) {
+            responseText = null;
+        } else {
+            var randomIndex = Math.floor(Math.random() * Responses[responseType].phrases.length);
+            responseText = self.parseResponse(Responses[responseType].phrases[randomIndex]);
+        };
 
         // Wait until chatbot is done thinking
         var curTimestamp = new Date().getTime();
-        if (curTimestamp - self.lastCommentTime < self.thinkTime) {
-            setTimeout(function() {}, self.thinkTime - (curTimestamp - self.lastCommentTime));
-        };
+        var waitTime = self.thisTime - (curTimestamp - self.userConversation.lastCommentTime);
+        waitTime = (waitTime > 0) ? waitTime : 0;
 
-        // Now complete the promise
-        if (typeof responseText !== 'null') {
-            resolve(responseText, responseType);
-        } else {
-            reject(responseText);
-        };
+        setTimeout(function() {
+            // Now complete the promise
+            if (typeof responseText !== 'null') {
+                resolve({
+                    text: responseText,
+                    type: responseType
+                });
+            } else {
+                reject(responseText);
+            };
+        }, waitTime);
+
     });
     return promise;
 };
 
+/**
+ * Check given text for a recognized keyword of given type
+ *
+ */
+BotConversation.prototype.checkForKeyword = function(chatText, type) {
+    if (typeof Responses[type] === 'undefined') {
+        return false;
+    };
+
+    var words = chatText.split(' ');
+    for (var i=0; i < words.length; i++) {
+        if (Responses[type].keywords.indexOf(words[i]) !== -1) {
+            return true;
+        };
+    };
+    return false;
+};
+
+/**
+ * Compile the response text based on the given abstract phrase,
+ * after replacing any keywords in phrase as needed
+ *
+ */
+BotConversation.prototype.parseResponse = function(abstractPhrase) {
+    var self = this;
+
+    // keyword should match any <greeting> but not escaped bracket (ie \\<word\\>)
+    var keyword = /[^\\]?<[\w]+[^\\]>/g;
+    return abstractPhrase.replace(keyword, function(match) {
+        // Remove <,> and whitespace from matched 'type'
+        return (match[0] == '<' ? '' : match[0]) + self.getKeyword(match.replace(/[<>\s]/g,''));
+    });
+};
 
 /**
  * Make a comment to prompt further conversation

@@ -6,7 +6,7 @@ window.onload = function() {
     // Set default chatbot greeting
     userConvo = new UserConversation(userOutput);
     botConvo = new BotConversation(chatbotOutput);
-    botConvo.addLine('Hi Im the chatbot');
+    botConvo.addLine('Hi I\'m the chatbot', 'greeting');
     botConvo.addParticipant(userConvo);
 
     chatInput.onkeypress = function(e) {
@@ -21,8 +21,8 @@ window.onload = function() {
             chatInput.value = '';
 
             // Display chatbot's response
-            botConvo.getResponsePromise(chatText).then(function(responseText, responseType) {
-                botConvo.addLine(responseText, responseType);
+            botConvo.getResponsePromise(chatText).then(function(response) {
+                botConvo.addLine(response.text, response.type);
             }, function(err) {
                 console.log(err);
             });
