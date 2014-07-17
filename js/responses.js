@@ -28,6 +28,7 @@ var Responses = {
     },
     personSlang: {
         keywords: [
+            'brother',
             'dude',
             'man',
             'my man',
@@ -85,4 +86,13 @@ var Responses = {
             'Psh, you know I can\'t tell you that'
         ]
     }
-}
+};
+
+var inputComments = {
+    'do you like (<input>)\\?*$': {
+        acceptedResponses: [
+            'I love <input>!',
+            '<input>? Are you kidding? I love <input>!'
+        ]
+    }
+};

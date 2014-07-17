@@ -1,4 +1,11 @@
 /**
+ * Global variables
+ *
+ */
+// ex, 'test <input> phrase' matches '<input>'
+var keywordRegEx = /[^\\]{0,0}<[\w]+[^\\]{0,0}>/g;
+
+/**
  * Generic conversation class
  *
  */
@@ -109,6 +116,18 @@ BotConversation.prototype.monitorLulls = function() {
 };
 
 /**
+ * Get a random choice of the given list
+ *
+ */
+BotConversation.prototype.randomChoice = function(list) {
+    if (typeof list === 'undefined' || list.length === 0) {
+        return null;
+    };
+
+    return list[Math.floor(Math.random() * list.length)];
+};
+
+/**
  * Get a random response keyword for given response type
  *
  */
@@ -117,8 +136,7 @@ BotConversation.prototype.getKeyword = function(type) {
         return '';
     };
 
-    var keywords = Responses[type].keywords;
-    return keywords[Math.floor(Math.random() * keywords.length)];
+    return this.randomChoice(Responses[type].keywords);
 };
 
 /**
@@ -132,7 +150,7 @@ BotConversation.prototype.getRandomResponseType = function(availTypes, excludeTy
     var types = availTypes.filter(function(type) {
         return excludeTypes.indexOf(type) === -1;
     });
-    return types[Math.floor(Math.random() * types.length)];
+    return this.randomChoice(types);
 };
 
 /**
@@ -180,14 +198,16 @@ BotConversation.prototype.getResponsePromise = function(chatText) {
     var self = this;
 
     var promise = new Promise(function(resolve, reject) {
-        var responseType = self.getResponseType(chatText),
-            responseText;
+        var responseText = self.getStructuredInputResponse(chatText);
 
-        if (responseType === null) {
-            responseText = null;
-        } else {
-            var randomIndex = Math.floor(Math.random() * Responses[responseType].phrases.length);
-            responseText = self.parseResponse(Responses[responseType].phrases[randomIndex]);
+        if (!responseText) {
+            var responseType = self.getResponseType(chatText);
+
+            if (responseType === null) {
+                responseText = null;
+            } else {
+                responseText = self.createResponse(self.randomChoice(Responses[responseType].phrases));
+            };
         };
 
         // Wait until chatbot is done thinking
@@ -220,7 +240,7 @@ BotConversation.prototype.checkForKeyword = function(chatText, type) {
         return false;
     };
 
-    var words = chatText.replace(/[,.?!()&]/, '').split(' ');
+    var words = chatText.replace(/[,.?!()&]/g, '').split(' ');
     for (var i=0; i < words.length; i++) {
         if (Responses[type].keywords.indexOf(words[i]) !== -1) {
             return true;
@@ -230,16 +250,48 @@ BotConversation.prototype.checkForKeyword = function(chatText, type) {
 };
 
 /**
+ * Check the list of known input comment structures to see
+ * if this one matches any. If so, create the response text,
+ * else return null
+ *
+ */
+BotConversation.prototype.getStructuredInputResponse = function(chatText) {
+    var self = this,
+        keywordVariableList = [],
+        commentRegExp;
+
+    for (var comment in inputComments) {
+        commentRegExp = RegExp(comment.replace(keywordRegEx, function(match) {
+            keywordVariableList.push(match);
+            // Use the non-greedy wildcard syntax
+            return '.+?';
+        }));
+
+        if (chatText.search(commentRegExp) > -1) {
+            var answer = self.randomChoice(inputComments[comment].acceptedResponses);
+            var inputVars = chatText.match(commentRegExp).slice(1);
+
+            for (var i=0; i<keywordVariableList.length; i++) {
+                // Use RegExp with param 'g' to replace all (global) occurrences of keyword
+                answer = answer.replace(RegExp(keywordVariableList[i], 'g'), inputVars[i]);
+            };
+            return answer;
+        };
+    };
+    return null;
+};
+
+/**
  * Compile the response text based on the given abstract phrase,
  * after replacing any keywords in phrase as needed
  *
+ * @param String abstractPhrase (eg. '<greeting> to you!')
  */
-BotConversation.prototype.parseResponse = function(abstractPhrase) {
+BotConversation.prototype.createResponse = function(abstractPhrase) {
     var self = this;
 
     // keyword should match any <greeting> but not escaped bracket (ie \\<word\\>)
-    var keyword = /[^\\]?<[\w]+[^\\]>/g;
-    return abstractPhrase.replace(keyword, function(match) {
+    return abstractPhrase.replace(keywordRegEx, function(match) {
         // Remove <,> and whitespace from matched 'type'
         return (match[0] == '<' ? '' : match[0]) + self.getKeyword(match.replace(/[<>\s]/g,''));
     });
@@ -251,8 +303,7 @@ BotConversation.prototype.parseResponse = function(abstractPhrase) {
  */
 BotConversation.prototype.promptConversation = function() {
     var responseType = 'continuePrompt',
-        randomIndex = Math.floor(Math.random() * Responses[responseType].length),
-        responseText = Responses[responseType][randomIndex];
+        responseText = this.randomChoice(Responses[responseType]);
 
     // Do not keep trying after 2 repeated attempts
     var makeComment = false,
