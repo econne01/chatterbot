@@ -94,5 +94,23 @@ var inputComments = {
             'I love <input>!',
             '<input>? Are you kidding? I love <input>!'
         ]
+    },
+    'would you( ever){0,1} (<input>)\\?*$': {
+        acceptedResponses: [
+            'I would never!',
+            'I don\'t think so. <input> is scary',
+            '<input>? Yeah why not!',
+            'Hmm, I would try it',
+            'Oh sure, I love <input>!'
+        ]
+    },
+    'have you( ever){0,1} (<input>)\\?*$': {
+        acceptedResponses: [
+            'I would never!',
+            'Hmm, I want to',
+            'No, but I would try it',
+            'No, not yet',
+            'Oh sure, I love <input>!'
+        ]
     }
 };
