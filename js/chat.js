@@ -264,7 +264,7 @@ BotConversation.prototype.getStructuredInputResponse = function(chatText) {
         commentRegExp = RegExp(comment.replace(keywordRegEx, function(match) {
             keywordVariableList.push(match);
             // Use the non-greedy wildcard syntax
-            return '.+?';
+            return '.+';
         }));
 
         if (chatText.search(commentRegExp) > -1) {
