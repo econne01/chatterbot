@@ -1,0 +1,17 @@
+{
+    "name": "chatterbot",
+    "version": "0.0.1",
+    "description": "An attempt at a chatbot with a memory that can recognize user input phrases and respond meaningfully",
+    "author": {
+        "name": "Eric Connelly",
+        "email": "eric.connelly08@gmail.com"
+    },
+    "private": true,
+    "dependencies": {
+        "express": "4.x",
+        "node-neo4j": "2.0.x"
+    },
+    "scripts": {
+        "start": "./node_modules/nodemon/nodemon.js server.js --apihost=localhost --apiport=8888"
+    }
+}
