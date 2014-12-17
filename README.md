@@ -7,5 +7,6 @@ To Start
 ```
 npm build
 npm install
+npm install -g nodemon
 npm start
 ```
