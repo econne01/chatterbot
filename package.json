@@ -12,6 +12,6 @@
         "node-neo4j": "2.0.x"
     },
     "scripts": {
-        "start": "./node_modules/nodemon/nodemon.js server.js --apihost=localhost --apiport=8888"
+        "start": "nodemon server.js --apihost=localhost --apiport=8888"
     }
 }
