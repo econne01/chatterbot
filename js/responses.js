@@ -112,5 +112,14 @@ var inputComments = {
             'No, not yet',
             'Oh sure, I love <input>!'
         ]
-    }
+    },
+    'how are you\\?*$': {
+        acceptedResponses: [
+            'fine, fine',
+            'I\'m good',
+            'oh, swell',
+            'lovely!',
+            'super duper!'
+        ]
+    },
 };

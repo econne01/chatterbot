@@ -240,7 +240,13 @@ BotConversation.prototype.checkForKeyword = function(chatText, type) {
         return false;
     };
 
-    var words = chatText.replace(/[,.?!()&]/g, '').split(' ');
+    // Check for known full phrase
+    chatText = chatText.replace(/[,.?!()&]/g, '');
+    if (Responses[type].keywords.indexOf(chatText) !== -1) {
+        return true;
+    };
+
+    var words = chatText.split(' ');
     for (var i=0; i < words.length; i++) {
         if (Responses[type].keywords.indexOf(words[i]) !== -1) {
             return true;
