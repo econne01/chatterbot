@@ -9,13 +9,13 @@ window.onload = function() {
     botConvo.addLine('Hi I\'m the chatbot', 'greeting');
     botConvo.addParticipant(userConvo);
 
-    chatInput.onkeypress = function(e) {
+    chatInput.onkeydown = function(e) {
         if (!e) {
             e = window.event;
         };
         var keyCode = e.keyCode || e.which;
         if (keyCode == '13') {
-            // Display user's comment
+            // Display user's comment on Enter
             var chatText = chatInput.value;
             userConvo.addLine(chatText);
             chatInput.value = '';
@@ -26,6 +26,9 @@ window.onload = function() {
             }, function(err) {
                 console.log(err);
             });
+        } else if (keyCode == '38') {
+            // Show last entered text on Up-Arrow
+            chatInput.value = userConvo.getLastLine().text;
         };
     }
 };

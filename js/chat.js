@@ -56,6 +56,13 @@ Conversation.prototype.addLine = function(chatText, type) {
 };
 
 /**
+ * Get the latest line in the conversation
+ */
+Conversation.prototype.getLastLine = function () {
+    return this.convoLines.slice(-1)[0];
+};
+
+/**
  * User Conversation logic
  *
  */
@@ -66,6 +73,7 @@ var UserConversation = function(container, options) {
 // Extend Converation functions
 UserConversation.prototype.init = Conversation.prototype.init;
 UserConversation.prototype.addLine = Conversation.prototype.addLine;
+UserConversation.prototype.getLastLine = Conversation.prototype.getLastLine;
 
 /**
  * Bot Conversation logic
@@ -82,6 +90,7 @@ var BotConversation = function(container, options) {
 // Extend Converation functions
 BotConversation.prototype.init = Conversation.prototype.init;
 BotConversation.prototype.addLine = Conversation.prototype.addLine;
+BotConversation.prototype.getLastLine = Conversation.prototype.getLastLine;
 
 /**
  * Add a user conversation to be a participant in
