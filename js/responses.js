@@ -9,14 +9,7 @@ var Responses = {
         ]
     },
     greeting: {
-        keywords: [
-            'hello',
-            'hey',
-            'hi',
-            'sup',
-            'what\'s up',
-            'yo'
-        ],
+        keywords: Keywords.hello,
         phrases: [
             '<greeting> :)',
             'Oh <greeting>',
@@ -27,13 +20,7 @@ var Responses = {
         ]
     },
     personSlang: {
-        keywords: [
-            'brother',
-            'dude',
-            'man',
-            'my man',
-            'playa'
-        ],
+        keywords: Keywords.dude,
         phrases: []
     },
     pleasantry: {
