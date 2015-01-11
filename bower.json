@@ -1,0 +1,12 @@
+{
+  "name": "chatterbot",
+  "description": "An attempt at a chatbot with a memory that can recognize user input phrases and respond meaningfully",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.x",
+    "angular-route": "1.2.x",
+    "angular-loader": "1.2.x",
+    "angular-mocks": "~1.2.x"
+  }
+}
