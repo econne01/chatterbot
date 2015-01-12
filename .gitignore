@@ -1,3 +1,4 @@
 # Installed Packages
 bower_components/*
 node_modules/*
+*built*.js

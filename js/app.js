@@ -10,7 +10,4 @@ angular.module('botApp', [
         templateUrl: 'angular_index.html',
         controller: 'ConversationCtrl'
     });
-}])
-.controller('ConversationCtrl', [function () {
-
 }]);
