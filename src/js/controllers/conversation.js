@@ -1,5 +1,5 @@
-var botApp = angular.module('botApp', []);
+var conversationControllers = angular.module('conversationControllers', []);
 
-botApp.controller('ConversationCtrl', function ($scope) {
+conversationControllers.controller('ConversationCtrl', function ($scope) {
     $scope.counter = 42;
 });

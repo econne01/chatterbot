@@ -10,8 +10,9 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
-            'js/app.js',
-            'js/controllers/conversation.js'
+            'src/js/app.js',
+            'src/js/router.js',
+            'src/js/controllers/conversation.js'
         ],
         dest: '<%= pkg.name %>-built.js'
       }
