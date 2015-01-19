@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="en-US">
+<html lang="en-US" ng-app="chatterbotApp">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -9,36 +9,39 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>Econne first chatbot</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" />
-        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="src/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="src/css/main.css" />
     </head>
-    <body class="background">
+    <body class="background" ng-controller="ConversationCtrl">
         <h1 class="room-title">The Chatter Bot
         </h1>
         <div id="bot__output" class="output-box">
             <div class="conversation-container">
+                <div ng-repeat="convoItem in botConvoHistory track by $index">
+                    {{ convoItem }}
+                </div>
             </div>
         </div>
         <div id="user__output" class="output-box">
             <div class="conversation-container">
+                <div ng-repeat="convoItem in userConvoHistory track by $index">
+                    {{ convoItem }}
+                </div>
             </div>
         </div>
         <div id="chatbot-image">
-            <img src="images/chatbot.jpg" />
+            <img src="src/images/chatbot.jpg" />
         </div>
         <div id="user__input">
-            <input id="chatInput" type="text" placeholder="Type me a message" />
+            <input id="chatInput" type="text" placeholder="Type me a message"
+                   ng-model="userInput" ng-keyup="inputKeyEvent=$event" />
         </div>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://code.jquery.com/jquery.js"></script>
-        <!-- Extra js sources here -->
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/chat.js"></script>
-        <script src="js/poller.js"></script>
-        <script src="js/keywords.js"></script>
-        <script src="js/vocab/greeting.js"></script>
-        <script src="js/responses.js"></script>
+        <script src="packages/jquery-1.11.1.min.js"></script>
+        <script src="packages/bootstrap.min.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="chatterbot-built.js"></script>
     </body>
 </html>
 
