@@ -18,14 +18,14 @@
         <div id="bot__output" class="output-box">
             <div class="conversation-container">
                 <div ng-repeat="convoItem in botConvoHistory track by $index">
-                    {{ convoItem }}
+                    {{ convoItem.text }}
                 </div>
             </div>
         </div>
         <div id="user__output" class="output-box">
             <div class="conversation-container">
                 <div ng-repeat="convoItem in userConvoHistory track by $index">
-                    {{ convoItem }}
+                    {{ convoItem.text }}
                 </div>
             </div>
         </div>

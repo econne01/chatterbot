@@ -5,11 +5,11 @@ conversationServices.factory('keywordService',
         var hello = ['hello', 'hi', 'hey', 'sup', 'what\'s up', 'yo'];
 
         var keywordServiceInstance = {
-            getResponse : function (chatInput) {
-                if (hello.indexOf(chatInput) !== -1) {
-                    return 'Hi there!!';
+            getResponse : function (userInput) {
+                if (hello.indexOf(userInput.text) !== -1) {
+                    return {type: 'greeting', text: 'Hi there!!'};
                 } else {
-                    return 'random response';
+                    return {type: 'unknown', text: 'random response'};
                 }
             }
         };
