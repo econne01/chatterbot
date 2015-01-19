@@ -24,7 +24,7 @@ conversationControllers.controller('ConversationCtrl', [
         /**
          * Determine the chatBot's response to a user input and return
          * a promise to yield chatBot's response
-         * @param {Object} userInput - ex, {type: 'greeting', text: 'Hey'}
+         * @param {Object} userInput - eg, {type: 'greeting', text: 'Hey'}
          * @returns promise
          */
         var getBotResponse = function (userInput) {
@@ -39,6 +39,12 @@ conversationControllers.controller('ConversationCtrl', [
         };
 
 
+        /**
+         * Set the given comment to either user or bot history and then monitor
+         * if conversation lulls
+         * @param {string} convoHistory - either bot's or user's
+         * @param {Object} comment - eg, {type: 'greeting', text: 'Hey'}
+         */
         var _setResponse = function (convoHistory, comment) {
             $scope[convoHistory].push(comment);
             $scope[convoHistory] = $scope[convoHistory].slice(-1 * 5);
@@ -58,6 +64,11 @@ conversationControllers.controller('ConversationCtrl', [
             _setResponse('userConvoHistory', userInput);
         };
 
+        /**
+         * Determine bot response and update the user and bot comment histories,
+         * and handle any resulting effects of the comment or subsequent lulls
+         * @param {string} userText
+         */
         var handleInputComment = function (userText) {
             var userInput = {type: undefined, text: userText};
 
@@ -103,6 +114,10 @@ conversationControllers.controller('ConversationCtrl', [
             }
         };
 
+        /**
+         * Convenience method to let user repeat his previous comment easily
+         * by hitting up arrow (as in terminal)
+         */
         var resetLastComment = function () {
             $scope.userInput = $scope.userConvoHistory.slice(-1)[0];
         };
