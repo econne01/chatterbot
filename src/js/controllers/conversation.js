@@ -31,7 +31,7 @@ conversationControllers.controller('ConversationCtrl', [
             var deferred = $q.defer();
 
             setTimeout(function() {
-                var botOutput = keywordService.getResponse(userInput);
+                var botOutput = keywordService.respondToInput(userInput);
                 deferred.resolve(botOutput);
             }, chatConfig.thinkTime);
 
