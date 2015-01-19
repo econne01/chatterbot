@@ -1,27 +1,49 @@
 var conversationControllers = angular.module('conversationControllers', []);
 
 conversationControllers.controller('ConversationCtrl', [
+    '$q',
     '$scope',
     'keywordService',
     function (
+        $q,
         $scope,
         keywordService
     ) {
+        // Time settings in milliseconds
+        var chatConfig = {
+            thinkTime : 0.85 * 1000,
+            lullTimeTilPrompt : 20 * 1000
+        }
+        var lastCommentTime = new Date().getTime();
+
         $scope.botConvoHistory = ['Hi I\'m the chatbot!'];
         $scope.userInput = '';
         $scope.userConvoHistory = [];
 
-        $scope.handleInputComment = function (userInput) {
-            var botOutput = keywordService.getResponse(userInput);
-            $scope.botConvoHistory.push(botOutput);
+        var getBotResponse = function (userInput) {
+            var deferred = $q.defer();
+
+            setTimeout(function() {
+                var botOutput = keywordService.getResponse(userInput);
+                deferred.resolve(botOutput);
+            }, chatConfig.thinkTime);
+
+            return deferred.promise;
+        };
+
+        var handleInputComment = function (userInput) {
+            var botPromise = getBotResponse(userInput);
+            botPromise.then(function (botOutput) {
+                $scope.botConvoHistory.push(botOutput);
+                $scope.botConvoHistory = $scope.botConvoHistory.slice(-1 * 5);
+            })
             $scope.userConvoHistory.push(userInput);
             // @todo - scroll to bottom of history instead of limit lines
-            $scope.botConvoHistory = $scope.botConvoHistory.slice(-1 * 5);
             $scope.userConvoHistory = $scope.userConvoHistory.slice(-1 * 5);
             $scope.userInput = '';
         };
 
-        $scope.resetLastComment = function () {
+        var resetLastComment = function () {
             $scope.userInput = $scope.userConvoHistory.slice(-1)[0];
         };
 
@@ -29,10 +51,10 @@ conversationControllers.controller('ConversationCtrl', [
             if (angular.isDefined(keyEvent)) {
                 switch (keyEvent.keyCode) {
                     case 13: // Enter
-                        $scope.handleInputComment($scope.userInput);
+                        handleInputComment($scope.userInput);
                         break;
                     case 38: // UP arrow
-                        $scope.resetLastComment();
+                        resetLastComment();
                         break;
                 }
             }
