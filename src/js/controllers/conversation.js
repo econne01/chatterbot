@@ -24,13 +24,14 @@ conversationControllers.controller('ConversationCtrl', [
         /**
          * Determine the chatBot's response to a user input and return
          * a promise to yield chatBot's response
-         * @param {Object} userInput - eg, {type: 'greeting', text: 'Hey'}
+         * @param {string} userText
          * @returns promise
          */
-        var getBotResponse = function (userInput) {
+        var getBotResponse = function (userText) {
             var deferred = $q.defer();
 
             setTimeout(function() {
+                var userInput = {type: undefined, text: userText};
                 var botOutput = keywordService.respondToInput(userInput);
                 deferred.resolve(botOutput);
             }, chatConfig.thinkTime);
@@ -58,7 +59,13 @@ conversationControllers.controller('ConversationCtrl', [
             _setResponse('botConvoHistory', botOutput);
         };
 
+        /**
+         * Set user's comment in history and clear the user's chat input to
+         * allow new comment
+         * @param {string} userText
+         */
         var setUserResponse = function (userInput) {
+            var userInput = {type: undefined, text: userText};
             // @todo - scroll to bottom of history instead of limit lines
             $scope.userInput = '';
             _setResponse('userConvoHistory', userInput);
@@ -69,13 +76,9 @@ conversationControllers.controller('ConversationCtrl', [
          * and handle any resulting effects of the comment or subsequent lulls
          * @param {string} userText
          */
-        var handleInputComment = function (userText) {
-            var userInput = {type: undefined, text: userText};
-
-            var botPromise = getBotResponse(userInput);
+        var respondToUserComment = function (userText) {
+            var botPromise = getBotResponse(userText);
             botPromise.then(setBotResponse);
-
-            setUserResponse(userInput);
         };
 
         /**
@@ -126,7 +129,8 @@ conversationControllers.controller('ConversationCtrl', [
             if (angular.isDefined(keyEvent)) {
                 switch (keyEvent.keyCode) {
                     case 13: // Enter
-                        handleInputComment($scope.userInput);
+                        setUserResponse($scope.userInput);
+                        respondToUserComment($scope.userInput);
                         break;
                     case 38: // UP arrow
                         resetLastComment();
