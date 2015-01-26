@@ -1,35 +1,39 @@
-var conversationServices = angular.module('conversationServices', []);
+var chatterbotServices = angular.module('chatterbotServices');
 
-conversationServices.factory('keywordService',
-    [function () {
-        var keywords = {
-            greeting : ['hello', 'hi', 'hey', 'sup', 'what\'s up', 'yo']
-        };
-
-        var keywordServiceInstance = {
+chatterbotServices.factory('conversationService', [
+    'vocabularyService',
+    function (
+        vocabularyService
+    ) {
+        var conversationServiceInstance = {
 
             /**
-             * Return a randomly chosen response of given type
-             * @param {string | undefined} responseType
+             * Select an item from given list at random, and return
+             * @param {Array} itemList
+             * @returns {Object} - an item from given list
              */
-            getResponse : function (responseType) {
-                if (responseType in keywords) {
-                    var responses = keywords[responseType];
-                    var randomIndex = Math.floor(Math.random() * responses.length);
-                    return {type: responseType, text: responses[randomIndex]};
-                } else {
-                    return {type: undefined, text: 'random response'};
-                }
+            chooseRandomItem : function chooseRandomItem(itemList) {
+                var randomIndex = Math.floor(Math.random() * itemList.length);
+                return itemList[randomIndex];
             },
 
-            respondToInput : function (userInput) {
-                if (keywords.greeting.indexOf(userInput.text) !== -1) {
-                    return this.getResponse('greeting');
+            /**
+             * Determine an appropriate response to input and return comment object
+             * @param {string} userInput
+             * @returns {Object}
+             */
+            getResponseToInput : function (userInput) {
+                var responses;
+                var responseType = vocabularyService.getCommentType(userInput);
+                if (responseType in vocabularyService.phraseGroups) {
+                    responses = vocabularyService.phraseGroups[responseType].keywords;
                 } else {
-                    return this.getResponse('random');
+                    responses = ['random response'];
                 }
+                var responseText = this.chooseRandomItem(responses);
+                return {type: responseType, text: responseText};
             }
         };
-        return keywordServiceInstance;
+        return conversationServiceInstance;
     }
 ]);

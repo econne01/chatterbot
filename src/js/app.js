@@ -4,5 +4,9 @@
 var chatterbotApp = angular.module('chatterbotApp', [
     'ngRoute',
     'conversationControllers',
-    'conversationServices'
+    'chatterbotServices',
+    'vocabularyConstants'
 ]);
+
+var chatterbotServices = angular.module('chatterbotServices', []);
+var vocabularyConstants = angular.module('vocabularyConstants', []);

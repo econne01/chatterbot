@@ -3,11 +3,11 @@ var conversationControllers = angular.module('conversationControllers', []);
 conversationControllers.controller('ConversationCtrl', [
     '$q',
     '$scope',
-    'keywordService',
+    'conversationService',
     function (
         $q,
         $scope,
-        keywordService
+        conversationService
     ) {
         // Time settings in milliseconds
         var chatConfig = {
@@ -24,15 +24,14 @@ conversationControllers.controller('ConversationCtrl', [
         /**
          * Determine the chatBot's response to a user input and return
          * a promise to yield chatBot's response
-         * @param {string} userText
+         * @param {string} userInput
          * @returns promise
          */
-        var getBotResponse = function (userText) {
+        var getBotResponse = function (userInput) {
             var deferred = $q.defer();
 
             setTimeout(function() {
-                var userInput = {type: undefined, text: userText};
-                var botOutput = keywordService.respondToInput(userInput);
+                var botOutput = conversationService.getResponseToInput(userInput);
                 deferred.resolve(botOutput);
             }, chatConfig.thinkTime);
 
@@ -64,7 +63,7 @@ conversationControllers.controller('ConversationCtrl', [
          * allow new comment
          * @param {string} userText
          */
-        var setUserResponse = function (userInput) {
+        var setUserResponse = function (userText) {
             var userInput = {type: undefined, text: userText};
             // @todo - scroll to bottom of history instead of limit lines
             $scope.userInput = '';
@@ -129,8 +128,9 @@ conversationControllers.controller('ConversationCtrl', [
             if (angular.isDefined(keyEvent)) {
                 switch (keyEvent.keyCode) {
                     case 13: // Enter
-                        setUserResponse($scope.userInput);
-                        respondToUserComment($scope.userInput);
+                        var userText = $scope.userInput;
+                        setUserResponse(userText);
+                        respondToUserComment(userText);
                         break;
                     case 38: // UP arrow
                         resetLastComment();

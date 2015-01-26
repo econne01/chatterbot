@@ -12,6 +12,7 @@ module.exports = function(grunt) {
         src: [
             'src/js/app.js',
             'src/js/router.js',
+            'src/js/constants/**/*.js',
             'src/js/controllers/*.js',
             'src/js/services/*.js'
         ],
