@@ -25,7 +25,6 @@ vocabularyConstants.constant('vocabularyConstants.greeting', {
         'yo'
     ],
     'phrases': [
-        '[Oh ]<greeting>',
         '[Oh ]<greeting>[ <personSlang>]',
         '<greeting> there!',
         'How\'s it going'
