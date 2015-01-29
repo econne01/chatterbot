@@ -3,6 +3,20 @@ chatterbot
 
 A simple chat bot attempt
 
+Prerequisites
+========
+You need neo4j and nodemon installed locally to get up and running
+```
+npm install -g nodemon
+```
+
+If you are on a Mac
+```
+brew install neo4j
+```
+Else
+http://neo4j.com/download/
+
 To Start
 ```
 npm build
