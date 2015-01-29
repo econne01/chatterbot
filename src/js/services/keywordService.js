@@ -1,21 +1,47 @@
 var chatterbotServices = angular.module('chatterbotServices');
 
-chatterbotServices.factory('vocabularyService', [
+chatterbotServices.factory('keywordService', [
     'vocabularyConstants.greeting',
     'vocabularyConstants.personSlang',
+    'vocabularyConstants.ratingAdjective',
     function (
         greeting,
-        personSlang
+        personSlang,
+        ratingAdjective
     ) {
         // Note 'g' denotes global: we always find all instances of RegExp in a string
         var keywordRegExp = RegExp('<[\\w]+>', 'g');
         var keyPhraseRegex = RegExp('{[\\w]+}', 'g');
         var optionalRegex = RegExp('\\[.+?\\]', 'g'); // .+? is a non-greedy regExp
 
-        var vocabularyServiceInstance = {
+        var keywordServiceInstance = {
             phraseGroups : {
                 greeting : greeting,
-                personSlang : personSlang
+                personSlang : personSlang,
+                ratingAdjective : ratingAdjective
+            },
+
+            /**
+             * Select an item from given list at random, and return
+             * @param {Array} itemList
+             * @returns {Object} - an item from given list
+             */
+            chooseRandomItem : function chooseRandomItem(itemList) {
+                var randomIndex = Math.floor(Math.random() * itemList.length);
+                return itemList[randomIndex];
+            },
+
+            /**
+             * Return any randomly chosen keyword of given type
+             * @example getKeywordOfType('greeting') => 'hey'
+             * @param {string} keywordType
+             * @returns {string}
+             */
+            getKeywordOfType : function getKeywordOfType(keywordType) {
+                if (keywordType in this.phraseGroups) {
+                    var keywords = this.phraseGroups[keywordType].keywords;
+                    return this.chooseRandomItem(keywords);
+                }
             },
 
             /**
@@ -91,7 +117,7 @@ chatterbotServices.factory('vocabularyService', [
             }
 
         };
-        vocabularyServiceInstance.updatePhraseGroupRegExps();
-        return vocabularyServiceInstance;
+        keywordServiceInstance.updatePhraseGroupRegExps();
+        return keywordServiceInstance;
     }
 ]);
