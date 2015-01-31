@@ -1,9 +1,11 @@
 var chatterbotServices = angular.module('chatterbotServices');
 
 chatterbotServices.factory('conversationService', [
+    '$http',
     'keywordService',
     //'utilsService',
     function (
+        $http,
         keywordService
         //utilsService
     ) {
@@ -37,6 +39,16 @@ chatterbotServices.factory('conversationService', [
              * @returns {Array.<string>}
              */
             searchForRelatedPhrases : function searchForRelatedPhrases(words) {
+                var req = {
+                    method: 'GET',
+                    url: 'http://localhost:3000/api/id/1'
+                };
+
+                $http(req).success(function (data) {
+                    console.log('successfull fetch from neo4j');
+                }).error(function (data, status) {
+                    console.log('womp womp, error!');
+                });
                 return ['how are you'];
             },
 

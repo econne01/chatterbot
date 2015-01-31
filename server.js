@@ -1,20 +1,33 @@
-var express = require('express'),
-    http = require('http'),
-    url = require('url'),
-    neo4j = require('neo4j');
+var express = require('express');
+var http = require('http');
+var router = require('./src/neo4j_server/router');
 
-// @todo - possibly make this configurable from command line, or config file
-var port = 8888;
+// @todo - set variables in config file
+var env = 'develop';
+var developMode = (env === 'develop');
+var neo4jPort = 3000;
+
 var app = express();
 
-http.createServer(app);
-
+app.set('port', neo4jPort);
 
 // Static assets
-app.use(express.static(__dirname));
+if (developMode) {
+    app.use(express.static(__dirname));
+}
+
+app.use(function(request, response, next) {
+    console.log('Time: %d', Date.now());
+    next();
+});
 
 app.get('', function(request, response) {
     response.sendfile(__dirname + '/src/app/index.html');
 });
 
-app.listen(port);
+// use routes
+app.use('/api', router);
+
+http.createServer(app).listen(app.get('port'), function() {
+  console.log('Listening on localhost:' + app.get('port'));
+});
