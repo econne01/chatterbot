@@ -14,7 +14,7 @@ http.createServer(app);
 app.use(express.static(__dirname));
 
 app.get('', function(request, response) {
-    response.sendfile(__dirname + '/src/index.html');
+    response.sendfile(__dirname + '/src/app/index.html');
 });
 
 app.listen(port);

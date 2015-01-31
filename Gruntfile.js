@@ -10,11 +10,11 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
-            'src/js/app.js',
-            'src/js/router.js',
-            'src/js/constants/**/*.js',
-            'src/js/controllers/*.js',
-            'src/js/services/*.js'
+            'src/app/js/app.js',
+            'src/app/js/router.js',
+            'src/app/js/constants/**/*.js',
+            'src/app/js/controllers/*.js',
+            'src/app/js/services/*.js'
         ],
         dest: '<%= pkg.name %>-built.js'
       }
