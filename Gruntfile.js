@@ -1,31 +1,48 @@
 module.exports = function(grunt) {
 
-  // Project configuration.
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    concat: {
-      options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-        separator: ''
-      },
-      dist: {
-        src: [
-            'src/app/js/app.js',
-            'src/app/js/router.js',
-            'src/app/js/constants/**/*.js',
-            'src/app/js/controllers/*.js',
-            'src/app/js/services/*.js'
-        ],
-        dest: '<%= pkg.name %>-built.js'
-      }
-    }
-  });
+    // Project configuration.
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        concat: {
+            options: {
+                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+                separator: ''
+            },
+            dist: {
+                src: [
+                    'src/app/js/app.js',
+                    'src/app/js/router.js',
+                    'src/app/js/constants/**/*.js',
+                    'src/app/js/controllers/*.js',
+                    'src/app/js/services/*.js'
+                ],
+                dest: '<%= pkg.name %>-built.js'
+            }
+        },
+        concurrent: {
+            nodemon: {
+                options: {
+                    logConcurrentOutput: true
+                },
+                tasks: ['nodemon:dev']
+            }
+        },
+        nodemon: {
+            dev: {
+                script: 'src/neo4j_server/index.js'
+            }
+        }
+    });
 
-  // Load plugins
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+    // Load plugins
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-nodemon');
 
-  // Default task(s).
-  grunt.registerTask('default', ['concat']);
+    grunt.registerTask('server', ['concurrent:nodemon']);
+
+    // Default task(s).
+    grunt.registerTask('default', ['concat']);
 
 };
