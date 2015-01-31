@@ -2,8 +2,9 @@
 
 var express = require('express');
 var http = require('http');
+var router = require('./router');
 
-var app = module.exports = express();
+var app = express();
 
 // @todo - set variables in config file
 var neoPort = 7474;
@@ -17,11 +18,16 @@ if (developMode) {
 }
 
 app.use(function(request, response, next) {
-    response.status(404);
-
-    // Default to plain text:
-    response.type('txt').send('No neo4j front end available');
+    console.log('Time: %d', Date.now());
+    next();
 });
+
+app.get('/', function(request, response) {
+    response.type('txt').send('Welcome to Chatterbot Neo4j backend API');
+});
+
+// use routes
+app.use('/api', router);
 
 http.createServer(app).listen(app.get('port'), function() {
   console.log('Listening on localhost:' + app.get('port'));
