@@ -17,27 +17,9 @@ conversationControllers.controller('ConversationCtrl', [
         }
         var lastCommentTime = new Date().getTime();
 
-        $scope.botConvoHistory = ['Hi I\'m the chatbot!'];
+        $scope.botConvoHistory = [];
         $scope.userInput = '';
         $scope.userConvoHistory = [];
-
-        /**
-         * Determine the chatBot's response to a user input and return
-         * a promise to yield chatBot's response
-         * @param {string} userInput
-         * @returns promise
-         */
-        var getBotResponse = function (userInput) {
-            var deferred = $q.defer();
-
-            setTimeout(function() {
-                var botOutput = conversationService.getResponseToInput(userInput);
-                deferred.resolve(botOutput);
-            }, chatConfig.thinkTime);
-
-            return deferred.promise;
-        };
-
 
         /**
          * Set the given comment to either user or bot history and then monitor
@@ -76,8 +58,10 @@ conversationControllers.controller('ConversationCtrl', [
          * @param {string} userText
          */
         var respondToUserComment = function (userText) {
-            var botPromise = getBotResponse(userText);
-            botPromise.then(setBotResponse);
+            var botResponsePromise = conversationService.getResponsePromise(userText);
+            setTimeout(function() {
+                botResponsePromise.then(setBotResponse);
+            }, chatConfig.thinkTime);
         };
 
         /**
