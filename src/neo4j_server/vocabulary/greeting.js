@@ -1,4 +1,5 @@
 var greeting = {
+    'category': 'greeting',
     'keywords': [
         'hello',
         'hey',
