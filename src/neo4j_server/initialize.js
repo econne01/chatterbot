@@ -1,8 +1,8 @@
-var db = require('../database');
-var greeting = require('./greeting');
-var personSlang = require('./personSlang');
-var WordCategory = require('../models/wordCategory');
-var WordLiteral = require('../models/wordLiteral');
+var db = require('./database');
+var greeting = require('./constants/vocabulary/greeting');
+var personSlang = require('./constants/vocabulary/personSlang');
+var WordCategory = require('./models/wordCategory');
+var WordLiteral = require('./models/wordLiteral');
 
 // To delete datapoints in neo4j
 // MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r
@@ -12,6 +12,9 @@ var throwDatabaseError = function (err) {
     throw err;
 };
 
+/**
+ * Insert and/or Update neo4j database with the vocabulary stored in constants
+ */
 var initialize = function initialize() {
     var vocabTypes = [greeting, personSlang];
     vocabTypes.forEach(function(vocab) {

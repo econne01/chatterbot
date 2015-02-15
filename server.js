@@ -1,7 +1,7 @@
 var express = require('express');
 var http = require('http');
 var router = require('./src/neo4j_server/router');
-var initialize = require('./src/neo4j_server/vocabulary/initialize');
+var initialize = require('./src/neo4j_server/initialize');
 
 // @todo - set variables in config file
 var env = 'develop';
