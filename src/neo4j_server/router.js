@@ -15,6 +15,22 @@ router.get('/id/:nodeId', function(request, response) {
         }
         response.type('json').send(node.data);
     });
-})
+});
+
+router.get('/keywords/:keywordCategory', function(request, response) {
+    var keywordCategory = request.params.keywordCategory;
+    reqData = {
+        "statements" : [{
+            "statement" : "MATCH (n) WHERE n.keywordCategory = " + keywordCategory + " RETURN n.keyword"
+        }]
+    };
+    url = 'http://localhost:7474/db/data/transaction/commit';
+    db.getNode(url, function (err, node) {
+        if (err) {
+            response.type('txt').send('Error when retrieving node of keywordCategory: ' + keywordCategory + '  '  + err);
+        }
+        response.type('json').send(node.data);
+    });
+});
 
 module.exports = router;

@@ -1,11 +1,15 @@
 var express = require('express');
 var http = require('http');
 var router = require('./src/neo4j_server/router');
+var initialize = require('./src/neo4j_server/vocabulary/initialize');
 
 // @todo - set variables in config file
 var env = 'develop';
 var developMode = (env === 'develop');
 var neo4jPort = 3000;
+
+// Setup initial database entries (base keywords and phrases)
+initialize();
 
 var app = express();
 

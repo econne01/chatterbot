@@ -15,7 +15,7 @@ var vocabularyConstants = angular.module('vocabularyConstants');
  * - In "phrases" list, square brackets [] denote optional input
  * - In "phrases" list, curly brackets {} denote a phrase of {type}
  */
-vocabularyConstants.constant('vocabularyConstants.greeting', {
+var greeting = {
     'keywords': [
         'hello',
         'hey',
@@ -29,4 +29,6 @@ vocabularyConstants.constant('vocabularyConstants.greeting', {
         '<greeting> there!',
         'How\'s it going'
     ]
-});
+};
+
+vocabularyConstants.constant('vocabularyConstants.greeting', greeting);

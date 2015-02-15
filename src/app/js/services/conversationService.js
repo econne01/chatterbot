@@ -41,14 +41,20 @@ chatterbotServices.factory('conversationService', [
             searchForRelatedPhrases : function searchForRelatedPhrases(words) {
                 var req = {
                     method: 'GET',
-                    url: 'http://localhost:3000/api/id/1'
+                    url: 'http://localhost:3000/api/keywords/' + 'greeting'
                 };
 
                 $http(req).success(function (data) {
                     console.log('successfull fetch from neo4j');
+                    console.log(data);
                 }).error(function (data, status) {
                     console.log('womp womp, error!');
                 });
+                angular.forEach(words, function(word) {
+                    if (keywordService.isKeywordMatch('greeting', word)) {
+
+                    }
+                })
                 return ['how are you'];
             },
 
