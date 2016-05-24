@@ -1,6 +1,6 @@
 var db = require('../database');
 
-var WordLiteral = require('seraph-model')(db, 'wordLiteral');
+var WordLiteral = require('seraph-model')(db, 'WordLiteral');
 
 WordLiteral.schema = {
     word: {
