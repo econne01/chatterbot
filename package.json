@@ -21,6 +21,6 @@
         "postinstall": "bower install",
 
         "prestart": "npm install",
-        "start": "nodemon server.js --apihost=localhost --apiport=8888"
+        "start": "./node_modules/nodemon/bin/nodemon.js server.js --apihost=localhost --apiport=8888"
     }
 }
