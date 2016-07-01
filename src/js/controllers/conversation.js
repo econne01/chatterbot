@@ -47,7 +47,7 @@ conversationControllers.controller('ConversationCtrl', [
          */
         var _setResponse = function (convoHistory, comment) {
             $scope[convoHistory].push(comment);
-            $scope[convoHistory] = $scope[convoHistory].slice(-1 * 5);
+            //$scope[convoHistory] = $scope[convoHistory].slice(-1 * 5);
             lastCommentTime = new Date().getTime();
 
             // Check for lulls in conversation following this comment
@@ -86,18 +86,12 @@ conversationControllers.controller('ConversationCtrl', [
          */
         var monitorLulls = function () {
             var lullStartTime = new Date().getTime();
-
-            var deferred = $q.defer();
             setTimeout(function() {
                 var isBored = lullStartTime >= lastCommentTime;
-                deferred.resolve(isBored);
-            }, chatConfig.lullTimeTilPrompt);
-
-            deferred.promise.then(function (isBored) {
                 if (isBored) {
                     promptConversation();
                 }
-            });
+            }, chatConfig.lullTimeTilPrompt);
         };
 
         /**
@@ -121,7 +115,10 @@ conversationControllers.controller('ConversationCtrl', [
          * by hitting up arrow (as in terminal)
          */
         var resetLastComment = function () {
-            $scope.userInput = $scope.userConvoHistory.slice(-1)[0];
+            var lastComment = $scope.userConvoHistory.slice(-1)[0];
+            if (lastComment) {
+                $scope.userInput = lastComment.text;
+            }
         };
 
         $scope.$watch('inputKeyEvent', function (keyEvent) {
