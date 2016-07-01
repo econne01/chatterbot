@@ -66,8 +66,11 @@ chatterbotServices.factory('conversationService', [
              */
             getResponseToInput : function (userInput) {
                 var responseText;
-                var responseType = vocabularyService.getCommentType(userInput);
-                if (!(responseType in vocabularyService.phraseGroups)) {
+                var inputType = vocabularyService.getCommentType(userInput);
+                var responseType;
+                if (inputType === 'greeting') {
+                    responseType = 'greeting';
+                } else {
                     responseType = 'random';
                 }
                 responseText = this.generateResponse(responseType);

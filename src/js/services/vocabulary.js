@@ -1,10 +1,12 @@
 var chatterbotServices = angular.module('chatterbotServices');
 
 chatterbotServices.factory('vocabularyService', [
+    'vocabularyConstants.affirmative',
     'vocabularyConstants.greeting',
     'vocabularyConstants.personSlang',
     'vocabularyConstants.random',
     function (
+        affirmative,
         greeting,
         personSlang,
         random
@@ -16,6 +18,7 @@ chatterbotServices.factory('vocabularyService', [
 
         var vocabularyServiceInstance = {
             phraseGroups : {
+                affirmative : affirmative,
                 greeting : greeting,
                 personSlang : personSlang,
                 random : random
