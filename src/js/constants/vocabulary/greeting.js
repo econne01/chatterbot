@@ -27,7 +27,7 @@ vocabularyConstants.constant('vocabularyConstants.greeting', {
     'phrases': [
         '[Oh ]<greeting>',
         '[Oh ]<greeting>[ <personSlang>]',
-        '<greeting> there!',
+        '<greeting> there[!]',
         'How\'s it going'
     ]
 });
