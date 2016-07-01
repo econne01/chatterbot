@@ -47,7 +47,7 @@ conversationControllers.controller('ConversationCtrl', [
          */
         var _setResponse = function (convoHistory, comment) {
             $scope[convoHistory].push(comment);
-            //$scope[convoHistory] = $scope[convoHistory].slice(-1 * 5);
+            $scope[convoHistory] = $scope[convoHistory].slice(-1 * 5);
             lastCommentTime = new Date().getTime();
 
             // Check for lulls in conversation following this comment

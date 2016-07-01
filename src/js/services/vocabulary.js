@@ -3,9 +3,11 @@ var chatterbotServices = angular.module('chatterbotServices');
 chatterbotServices.factory('vocabularyService', [
     'vocabularyConstants.greeting',
     'vocabularyConstants.personSlang',
+    'vocabularyConstants.random',
     function (
         greeting,
-        personSlang
+        personSlang,
+        random
     ) {
         // Note 'g' denotes global: we always find all instances of RegExp in a string
         var keywordRegExp = RegExp('<[\\w]+>', 'g');
@@ -15,7 +17,8 @@ chatterbotServices.factory('vocabularyService', [
         var vocabularyServiceInstance = {
             phraseGroups : {
                 greeting : greeting,
-                personSlang : personSlang
+                personSlang : personSlang,
+                random : random
             },
 
             /**
